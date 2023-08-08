@@ -6,3 +6,8 @@ CREATE TABLE IF NOT EXISTS public.goods (
 	price NUMERIC
 );
 
+CREATE TABLE IF NOT EXISTS public.orders (
+	id SERIAL PRIMARY KEY,
+	shop_id integer,
+	created_at timestamp
+);

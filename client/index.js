@@ -13,7 +13,7 @@ const pool = new Pool({
 	database: process.env.DB_NAME
 });
 
-const insertGood = async (name, price) => {
+const createGood = async (name, price) => {
 	const client = await pool.connect();
 	
 	try {
@@ -29,6 +29,28 @@ const insertGood = async (name, price) => {
 	return true;
 };
 
-insertGood('Good#1', 32).then((result) => console.log(result));
-insertGood('Good#2', 666.0).then((result) => console.log(result));
+const createOrder = async (shopId) => {
+	const client = await pool.connect();
+
+	try {
+		const timestamp = new Date().toISOString();
+		const query = `INSERT INTO "orders" ("shop_id", "created_at") VALUES ($1,$2)`;
+		await client.query(query, [ shopId, timestamp ]);
+	} catch (err) {
+		console.error(err);
+		return false;
+	} finally {
+		await client.release();
+	}
+
+	return true;
+};
+
+createGood('Good#1', 32).then(console.log);
+createGood('Good#2', 666.0).then(console.log);
+
+createOrder(1).then(console.log);
+createOrder(2).then(console.log);
+createOrder(1).then(console.log);
+createOrder(3).then(console.log);
 
