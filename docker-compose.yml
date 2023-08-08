@@ -1,0 +1,31 @@
+version: "3.1"
+
+services:
+  db_cluster:
+    container_name: db_cluster
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "sharding_test"
+      POSTGRES_USER: "johndoe"
+      POSTGRES_PASSWORD: "secret"
+    ports:
+      - "54321:5432"
+  db_shard01:
+    container_name: db_shard01
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "sharding_test"
+      POSTGRES_USER: "johndoe"
+      POSTGRES_PASSWORD: "secret"
+    ports:
+      - "54322:5432"
+  db_shard02:
+    container_name: db_shard02
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "sharding_test"
+      POSTGRES_USER: "johndoe"
+      POSTGRES_PASSWORD: "secret"
+    ports:
+      - "54323:5432"
+
