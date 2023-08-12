@@ -6,14 +6,14 @@ require('dotenv').config({
 const { Pool } = require('pg');
 const express = require('express');
 
-const goodsService = require('./goodsService');
+const goodsUtils = require('./goods-utils');
 
 const server = express();
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.get('/api/v1/goods', (req, res) => {
-	goodsService.get().then((data, err) => {
+	goodsUtils.get().then((data, err) => {
 		if (err) {
 			console.log('error', err);
 		}
@@ -23,7 +23,7 @@ server.get('/api/v1/goods', (req, res) => {
 });
 
 server.post('/api/v1/goods', (req, res) => {
-	goodsService.create(req.body).then((data, err) => {
+	goodsUtils.create(req.body).then((data, err) => {
 		if (err) {
 			console.log('error', err);
 		}
