@@ -4,6 +4,8 @@ services:
   db_cluster:
     container_name: db_cluster
     image: postgres:15
+    volumes:
+      - ./db_cluster:/var/lib/postgresql
     environment:
       POSTGRES_DB: "sharding_test"
       POSTGRES_USER: "johndoe"
@@ -13,6 +15,8 @@ services:
   db_shard01:
     container_name: db_shard01
     image: postgres:15
+    volumes:
+      - ./db_shard01:/var/lib/postgresql
     environment:
       POSTGRES_DB: "sharding_test"
       POSTGRES_USER: "johndoe"
@@ -22,6 +26,8 @@ services:
   db_shard02:
     container_name: db_shard02
     image: postgres:15
+    volumes:
+      - ./db_shard02:/var/lib/postgresql
     environment:
       POSTGRES_DB: "sharding_test"
       POSTGRES_USER: "johndoe"

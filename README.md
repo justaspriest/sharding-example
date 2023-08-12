@@ -28,6 +28,7 @@ docker-compose up -d
 Пароль для пользователя johndoe - secret
 
 3.1 Инициализировать основную БД
+Перед инициализацией необходимо корректно проставить адреса шардов в schema.sql
 ```psql -h <адрес основной БД> -p 5432 -U johndoe -d sharding_test -a -f ./schema.sql```
 3.2 Инициализировать первый шард
 ```psql -h <адрес первого шарда> -p 5432 -U johndoe -d sharding_test -a -f ./shard_schema.sql```
@@ -36,6 +37,17 @@ docker-compose up -d
 
 4. Запустить клиент
 ```
-node client/index.js
+cd ./client
+npm i
+node ./index.js
 ```
+5. Пример запроса
 
+5.1 Получение списка товаров
+```
+curl http://localhost:8080/api/v1/goods
+```
+5.2 Создание нового товара
+```
+curl http://localhost:8080/api/v1/goods -X POST -H 'Content-Type: application/json' -d '{ "name": "dummy", "price": 111 }'
+```

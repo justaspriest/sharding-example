@@ -24,7 +24,7 @@ GRANT USAGE ON FOREIGN DATA WRAPPER postgres_fdw TO johndoe;
 
 CREATE SERVER IF NOT EXISTS shard01
 FOREIGN DATA WRAPPER postgres_fdw
-OPTIONS (dbname 'sharding_test', host '172.18.0.3', port '5432');
+OPTIONS (dbname 'sharding_test', host '172.19.0.4', port '5432');
 
 CREATE USER MAPPING IF NOT EXISTS FOR johndoe
 SERVER shard01
@@ -42,7 +42,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard01
 PARTITION OF public.goods
 FOR VALUES WITH (modulus 2, remainder 0)
 SERVER shard01
-OPTIONS (shchema_name 'public', table_name 'goods');
+OPTIONS (schema_name 'public', table_name 'goods');
 
 -- SHARD02
 
@@ -50,7 +50,7 @@ OPTIONS (shchema_name 'public', table_name 'goods');
 
 CREATE SERVER IF NOT EXISTS shard02
 FOREIGN DATA WRAPPER postgres_fdw
-OPTIONS (dbname 'sharding_test', host '172.18.0.4', port '5432');
+OPTIONS (dbname 'sharding_test', host '172.19.0.3', port '5432');
 
 CREATE USER MAPPING IF NOT EXISTS FOR johndoe
 SERVER shard02
@@ -68,6 +68,6 @@ CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard02
 PARTITION OF public.goods
 FOR VALUES WITH (modulus 2, remainder 1)
 SERVER shard02
-OPTIONS (shchema_name 'public', table_name 'goods');
+OPTIONS (schema_name 'public', table_name 'goods');
 
 
