@@ -1,19 +1,18 @@
-CREATE TABLE IF NOT EXISTS public.goods
-(
-	id SERIAL,
-	name TEXT,
-	price NUMERIC
-)
-PARTITION BY RANGE (price);
-
 CREATE TABLE IF NOT EXISTS public.orders
 (
 	id SERIAL,
 	shop_id integer,
 	created_at timestamp
 )
-PARTITION BY HASH (shop_id);
+PARTITION BY RANGE (shop_id);
 
+CREATE TABLE IF NOT EXISTS public.goods
+(
+	id SERIAL,
+	name TEXT,
+	price NUMERIC
+)
+PARTITION BY HASH (price);
 
 CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 
@@ -33,17 +32,17 @@ OPTIONS (user 'johndoe', password 'secret');
 
 -- - DATA
 
-CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard01
-PARTITION OF public.goods
-FOR VALUES FROM (0) TO (50)
-SERVER shard01
-OPTIONS (schema_name 'public', table_name 'goods');
-
 CREATE FOREIGN TABLE IF NOT EXISTS public.orders_shard01
 PARTITION OF public.orders
-FOR VALUES WITH (modulus 2, remainder 0)
+FOR VALUES FROM (1) TO (3)
 SERVER shard01
 OPTIONS (schema_name 'public', table_name 'orders');
+
+CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard01
+PARTITION OF public.goods
+FOR VALUES WITH (modulus 2, remainder 0)
+SERVER shard01
+OPTIONS (shchema_name 'public', table_name 'goods');
 
 -- SHARD02
 
@@ -59,20 +58,16 @@ OPTIONS (user 'johndoe', password 'secret');
 
 -- - DATA
 
-CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard02
-PARTITION OF public.goods
-FOR VALUES FROM (50) TO (MAXVALUE)
-SERVER shard02
-OPTIONS (schema_name 'public', table_name 'goods');
-
 CREATE FOREIGN TABLE IF NOT EXISTS public.orders_shard02
 PARTITION OF public.orders
-FOR VALUES WITH (modulus 2, remainder 1)
+FOR VALUES FROM (3) TO (MAXVALUE)
 SERVER shard02
 OPTIONS (schema_name 'public', table_name 'orders');
 
-
--- COMMON RULES
-
+CREATE FOREIGN TABLE IF NOT EXISTS public.goods_shard02
+PARTITION OF public.goods
+FOR VALUES WITH (modulus 2, remainder 1)
+SERVER shard02
+OPTIONS (shchema_name 'public', table_name 'goods');
 
 
