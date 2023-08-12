@@ -8,12 +8,13 @@ const pool = new Pool({
 	database: process.env.DB_NAME
 });
 
-const createGood = async (name, price) => {
+const createOrder = async (shopId) => {
 	const client = await pool.connect();
-	
+
 	try {
-		const query = `INSERT INTO "goods" ("name", "price") VALUES ($1,$2) RETURNING *`;
-		const result = await client.query(query, [ name, price ]);
+		const timestamp = new Date().toISOString();
+		const query = `INSERT INTO "orders" ("shop_id", "created_at") VALUES ($1,$2) RETURNING *`;
+		const result = await client.query(query, [ shopId, timestamp ]);
 		return result.rows[0];
 	} finally {
 		await client.release();
@@ -22,11 +23,11 @@ const createGood = async (name, price) => {
 	return null;
 };
 
-const getGoods = async () => {
+const getOrders = async () => {
 	const client = await pool.connect();
 
 	try {
-		const query = 'SELECT * FROM "goods"';
+		const query = 'SELECT * FROM "orders"';
 		const data = await client.query(query);
 		return data.rows;
 	} finally {
@@ -37,11 +38,11 @@ const getGoods = async () => {
 };
 
 const create = (data) => {
-	return Promise.resolve(createGood(data.name, data.price));
+	return Promise.resolve(createOrder(data.shopId));
 };
 
 const get = () => {
-	return Promise.resolve(getGoods());
+	return Promise.resolve(getOrders());
 };
 
 module.exports = { create, get };
